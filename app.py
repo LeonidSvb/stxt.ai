@@ -144,15 +144,66 @@ with tab1:
     with col_right:
         st.subheader("📁 Upload and Run")
 
-        uploaded_file = st.file_uploader(
-            "CSV with leads",
-            type=['csv'],
-            help="Upload CSV with columns: Person - Name, Person - Email - Work"
-        )
+        # Show existing results for resume
+        UPLOADS_DIR = Path(__file__).parent / "uploads"
+        UPLOADS_DIR.mkdir(exist_ok=True)
 
-        if uploaded_file:
-            df = pd.read_csv(uploaded_file, encoding='utf-8-sig')
-            st.success(f"✅ Loaded {len(df)} rows")
+        results_files = sorted(RESULTS_DIR.glob("enriched_*.csv"), key=os.path.getmtime, reverse=True)
+
+        if results_files:
+            st.markdown("### 🔄 Resume from Previous Run")
+
+            with st.expander(f"📋 {len(results_files)} previous session(s) available", expanded=False):
+                for result_file in results_files[:5]:  # Show last 5
+                    try:
+                        df_check = pd.read_csv(result_file, encoding='utf-8-sig')
+                        total = len(df_check)
+                        found = len(df_check[df_check.get('Status') == 'Found']) if 'Status' in df_check.columns else 0
+                        not_found = len(df_check[df_check.get('Status') == 'Not Found']) if 'Status' in df_check.columns else 0
+                        pending = total - found - not_found
+
+                        col_info, col_btn = st.columns([3, 1])
+                        with col_info:
+                            st.text(f"📄 {result_file.name}")
+                            st.text(f"   ✅ {found} found | ❌ {not_found} not found | ⏳ {pending} pending")
+                        with col_btn:
+                            if st.button(f"📂 Load", key=f"load_{result_file.name}"):
+                                st.session_state.resume_file = result_file
+                                st.rerun()
+                    except Exception as e:
+                        st.text(f"⚠️ {result_file.name} (error reading)")
+
+        st.markdown("### 📤 Upload New or Continue")
+
+        # Check if resuming
+        resume_mode = False
+        if 'resume_file' in st.session_state and st.session_state.resume_file:
+            resume_mode = True
+            st.info(f"🔄 Resuming from: {st.session_state.resume_file.name}")
+            df = pd.read_csv(st.session_state.resume_file, encoding='utf-8-sig')
+            uploaded_file = None
+        else:
+            uploaded_file = st.file_uploader(
+                "CSV with leads",
+                type=['csv'],
+                help="Upload CSV with columns: Person - Name, Person - Email - Work"
+            )
+
+        if uploaded_file or resume_mode:
+            if not resume_mode:
+                df = pd.read_csv(uploaded_file, encoding='utf-8-sig')
+
+            # Show statistics
+            total = len(df)
+            found = len(df[df.get('Instagram URL', '') != '']) if 'Instagram URL' in df.columns else 0
+            pending = total - found
+
+            st.success(f"✅ Loaded {total} rows ({found} already found, {pending} pending)")
+
+            if resume_mode:
+                if st.button("🔄 Clear and Upload New"):
+                    del st.session_state.resume_file
+                    st.rerun()
 
             with st.expander("👀 Preview (first 10 rows)"):
                 st.dataframe(df.head(10))
@@ -195,14 +246,27 @@ with tab1:
                     results_placeholder = st.empty()
 
                     timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
-                    temp_input = f"temp_input_{timestamp}.csv"
-                    output_file = RESULTS_DIR / f"enriched_{timestamp}.csv"
 
-                    df_renamed = df.rename(columns={
-                        name_col: 'Person - Name',
-                        email_col: 'Person - Email - Work'
-                    })
-                    df_renamed.to_csv(temp_input, index=False, encoding='utf-8-sig')
+                    # If resuming, use existing file; otherwise create new
+                    if resume_mode:
+                        temp_input = str(st.session_state.resume_file)
+                        output_file = st.session_state.resume_file
+                        status_text.info(f"🔄 Resuming from existing file...")
+                    else:
+                        # Save uploaded file to uploads/
+                        if uploaded_file:
+                            upload_filename = uploaded_file.name.replace('.csv', f'_{timestamp}.csv')
+                            upload_path = UPLOADS_DIR / upload_filename
+                            df.to_csv(upload_path, index=False, encoding='utf-8-sig')
+
+                        temp_input = f"temp_input_{timestamp}.csv"
+                        output_file = RESULTS_DIR / f"enriched_{timestamp}.csv"
+
+                        df_renamed = df.rename(columns={
+                            name_col: 'Person - Name',
+                            email_col: 'Person - Email - Work'
+                        })
+                        df_renamed.to_csv(temp_input, index=False, encoding='utf-8-sig')
 
                     try:
                         status_text.info("⚙️ Initializing workflow...")
@@ -229,7 +293,13 @@ with tab1:
                             )
                         )
 
-                        os.remove(temp_input)
+                        # Only remove temp file if not resuming
+                        if not resume_mode and os.path.exists(temp_input):
+                            os.remove(temp_input)
+
+                        # Clear resume state after successful processing
+                        if resume_mode and 'resume_file' in st.session_state:
+                            del st.session_state.resume_file
 
                         progress_bar.progress(1.0)
                         status_text.success("✅ Enrichment completed!")

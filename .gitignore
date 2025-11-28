@@ -16,6 +16,10 @@ ENV/
 results/*.csv
 !results/.gitkeep
 
+# Uploads
+uploads/*.csv
+!uploads/README.md
+
 # Streamlit
 .streamlit/secrets.toml
 

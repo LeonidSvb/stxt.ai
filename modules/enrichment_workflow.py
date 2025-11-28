@@ -246,16 +246,36 @@ class EnrichmentWorkflow:
 
         self.stats['total'] = len(df)
 
+        # Count already processed rows
+        already_found = len(df[df['Instagram URL'].notna() & (df['Instagram URL'] != '')])
+        if already_found > 0:
+            print(f"⏭️  Skipping {already_found} already processed rows")
+            self.stats['found'] = already_found
+
         async with AsyncGoogleSearch(self.api_key, max_concurrent=self.batch_size) as searcher:
 
             total = len(df)
             processed = 0
+            skipped = 0
 
             for batch_start in range(0, total, self.batch_size):
                 batch_end = min(batch_start + self.batch_size, total)
-                batch = [(i, df.iloc[i]) for i in range(batch_start, batch_end)]
 
-                print(f"[{batch_start + 1}-{batch_end}/{total}] Processing batch...")
+                # Filter out already processed rows
+                batch = []
+                for i in range(batch_start, batch_end):
+                    row = df.iloc[i]
+                    # Skip if Instagram URL already exists and is not empty
+                    if pd.notna(row.get('Instagram URL')) and row.get('Instagram URL') != '':
+                        skipped += 1
+                        continue
+                    batch.append((i, row))
+
+                if not batch:
+                    print(f"[{batch_start + 1}-{batch_end}/{total}] All already processed, skipping...")
+                    continue
+
+                print(f"[{batch_start + 1}-{batch_end}/{total}] Processing {len(batch)} new leads (skipped {skipped} already found)...")
 
                 results = await self.process_batch(searcher, batch, query_template)
 
@@ -271,7 +291,7 @@ class EnrichmentWorkflow:
                         self.stats['not_found'] += 1
 
                 processed += len(batch)
-                self.stats['processed'] = processed
+                self.stats['processed'] = already_found + processed
 
                 if processed % self.save_every == 0:
                     df.to_csv(output_csv, index=False, encoding='utf-8-sig')

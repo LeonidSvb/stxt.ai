@@ -14,11 +14,13 @@ import time
 
 
 class AsyncGoogleSearch:
-    """Асинхронный клиент для RapidAPI Google Search"""
+    """Async client for RapidAPI Google Search"""
 
-    def __init__(self, api_key: str, host: str = "google-search116.p.rapidapi.com"):
+    def __init__(self, api_key: str, host: str = "google-search116.p.rapidapi.com", max_concurrent: int = 5):
         self.api_key = api_key
         self.host = host
+        self.max_concurrent = max_concurrent
+        self.semaphore = None
         self.session = None
         self.total_requests = 0
         self.successful = 0
@@ -26,6 +28,7 @@ class AsyncGoogleSearch:
 
     async def __aenter__(self):
         self.session = aiohttp.ClientSession()
+        self.semaphore = asyncio.Semaphore(self.max_concurrent)
         return self
 
     async def __aexit__(self, exc_type, exc_val, exc_tb):
@@ -39,52 +42,53 @@ class AsyncGoogleSearch:
         retry: int = 0,
         max_retries: int = 2
     ) -> Optional[Dict]:
-        """Выполнить асинхронный поиск"""
-        try:
-            self.total_requests += 1
+        """Execute async search"""
+        async with self.semaphore:
+            try:
+                self.total_requests += 1
 
-            headers = {
-                "x-rapidapi-host": self.host,
-                "x-rapidapi-key": self.api_key
-            }
+                headers = {
+                    "x-rapidapi-host": self.host,
+                    "x-rapidapi-key": self.api_key
+                }
 
-            params = {"query": query, "limit": limit}
+                params = {"query": query, "limit": limit}
 
-            async with self.session.get(
-                f"https://{self.host}",
-                headers=headers,
-                params=params,
-                timeout=aiohttp.ClientTimeout(total=15)
-            ) as response:
+                async with self.session.get(
+                    f"https://{self.host}",
+                    headers=headers,
+                    params=params,
+                    timeout=aiohttp.ClientTimeout(total=15)
+                ) as response:
 
-                if response.status == 429:
-                    print(f"\n!!! RATE LIMIT! Requests: {self.total_requests}")
-                    return None
+                    if response.status == 429:
+                        print(f"\n!!! RATE LIMIT! Requests: {self.total_requests}")
+                        return None
 
-                if response.status != 200:
-                    if retry < max_retries:
-                        await asyncio.sleep(1)
-                        return await self.search(query, limit, retry + 1, max_retries)
-                    return None
+                    if response.status != 200:
+                        if retry < max_retries:
+                            await asyncio.sleep(1)
+                            return await self.search(query, limit, retry + 1, max_retries)
+                        return None
 
-                data = await response.json()
-                self.successful += 1
-                return data
+                    data = await response.json()
+                    self.successful += 1
+                    return data
 
-        except asyncio.TimeoutError:
-            if retry < max_retries:
-                await asyncio.sleep(1)
-                return await self.search(query, limit, retry + 1, max_retries)
-            self.failed += 1
-            return None
-        except Exception as e:
-            print(f"\n  ! Error: {e}")
-            self.failed += 1
-            return None
+            except asyncio.TimeoutError:
+                if retry < max_retries:
+                    await asyncio.sleep(1)
+                    return await self.search(query, limit, retry + 1, max_retries)
+                self.failed += 1
+                return None
+            except Exception as e:
+                print(f"\n  ! Error: {e}")
+                self.failed += 1
+                return None
 
     @staticmethod
     def extract_instagram_url(results: Dict) -> Optional[str]:
-        """Извлечь Instagram URL из результатов поиска"""
+        """Extract Instagram URL from search results"""
         if not results or not results.get('results'):
             return None
 
@@ -106,8 +110,8 @@ class AsyncGoogleSearch:
 
 class EnrichmentWorkflow:
     """
-    Главный workflow для обогащения лидов
-    Unix философия: делает одну вещь - обогащает лиды
+    Main workflow for lead enrichment
+    Unix philosophy: does one thing - enriches leads
     """
 
     def __init__(
@@ -141,16 +145,16 @@ class EnrichmentWorkflow:
         query_template: Optional[str] = None
     ) -> Optional[str]:
         """
-        Найти Instagram URL для одного лида
+        Find Instagram URL for a single lead
 
         Args:
             searcher: AsyncGoogleSearch instance
-            name: Имя лида
-            email: Email лида
-            query_template: Кастомный шаблон запроса (опционально)
+            name: Lead name
+            email: Lead email
+            query_template: Custom query template (optional)
 
         Returns:
-            Instagram URL или None
+            Instagram URL or None
         """
         if query_template:
             query = query_template.format(name=name, email=email)
@@ -188,7 +192,7 @@ class EnrichmentWorkflow:
         leads_batch: List[tuple],
         query_template: Optional[str] = None
     ) -> List[tuple]:
-        """Обработать батч лидов"""
+        """Process batch of leads"""
         tasks = []
         for idx, lead in leads_batch:
             name = lead.get('Person - Name', '')
@@ -213,17 +217,17 @@ class EnrichmentWorkflow:
         progress_callback: Optional[Callable] = None
     ) -> Dict:
         """
-        Обогатить CSV файл
+        Enrich CSV file with Instagram URLs
 
         Args:
-            input_csv: Путь к входному CSV
-            output_csv: Путь к выходному CSV
-            max_leads: Максимум лидов (None = все)
-            query_template: Кастомный шаблон запроса
-            progress_callback: Функция для обновления прогресса
+            input_csv: Path to input CSV
+            output_csv: Path to output CSV
+            max_leads: Max leads to process (None = all)
+            query_template: Custom query template
+            progress_callback: Function for progress updates
 
         Returns:
-            Статистика обработки
+            Processing statistics
         """
         print(f"\n>> Instagram URL Enrichment (Async)")
         print(f"Input: {input_csv}")
@@ -302,19 +306,19 @@ def run_enrichment(
     query_template: Optional[str] = None
 ) -> Dict:
     """
-    Запустить обогащение (синхронная обертка для async)
+    Run enrichment (sync wrapper for async)
 
     Args:
-        input_csv: Входной CSV
-        output_csv: Выходной CSV
-        api_key: RapidAPI ключ
-        max_leads: Макс лидов
-        batch_size: Размер батча
-        delay: Задержка в секундах
-        query_template: Шаблон запроса
+        input_csv: Input CSV path
+        output_csv: Output CSV path
+        api_key: RapidAPI key
+        max_leads: Max leads to process
+        batch_size: Batch size
+        delay: Delay in seconds
+        query_template: Query template
 
     Returns:
-        Статистика
+        Statistics dict
     """
     workflow = EnrichmentWorkflow(
         api_key=api_key,

@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
-Instagram Lead Enrichment - Главное приложение
-Модульная система обогащения лидов через Streamlit UI
+Instagram Lead Enrichment - Main Application
+Modular lead enrichment system via Streamlit UI
 """
 
 import streamlit as st
@@ -27,14 +27,14 @@ st.set_page_config(
 PRESETS = {
     "Safe": {
         "name": "🛡️ Safe (1 req/sec)",
-        "description": "Безопасный режим - соответствует RapidAPI rate limit",
+        "description": "Safe mode - matches RapidAPI rate limit",
         "batch_size": 1,
         "delay": 1.0,
         "queries_per_lead": 2
     },
     "Balanced": {
         "name": "⚖️ Balanced (0.8 req/sec)",
-        "description": "Сбалансированный - надежный с запасом",
+        "description": "Balanced - reliable with margin",
         "batch_size": 5,
         "delay": 1.2,
         "queries_per_lead": 1
@@ -49,21 +49,21 @@ if 'stats' not in st.session_state:
     st.session_state.stats = None
 
 st.title("📸 Instagram Lead Enrichment")
-st.markdown("Модульная система обогащения лидов через RapidAPI Google Search")
+st.markdown("Modular lead enrichment system via RapidAPI Google Search")
 
-tab1, tab2, tab3 = st.tabs(["⚙️ Настройки", "📊 Результаты", "📖 Документация"])
+tab1, tab2, tab3 = st.tabs(["⚙️ Settings", "📊 Results", "📖 Documentation"])
 
 with tab1:
     col_left, col_right = st.columns([1, 2])
 
     with col_left:
-        st.subheader("⚙️ Конфигурация")
+        st.subheader("⚙️ Configuration")
 
-        st.markdown("### 🎛️ Пресеты")
-        st.info("⚠️ RapidAPI лимит: **1 запрос/секунду**")
+        st.markdown("### 🎛️ Presets")
+        st.info("⚠️ RapidAPI limit: **1 request/second**")
 
         preset_choice = st.radio(
-            "Выбери режим",
+            "Select mode",
             options=list(PRESETS.keys()),
             format_func=lambda x: PRESETS[x]["name"],
             index=0
@@ -72,55 +72,55 @@ with tab1:
         preset = PRESETS[preset_choice]
         st.info(preset["description"])
 
-        with st.expander("🔧 Расширенные настройки"):
-            st.markdown("**Производительность**")
+        with st.expander("🔧 Advanced Settings"):
+            st.markdown("**Performance**")
 
             batch_size = st.number_input(
                 "Batch Size",
                 min_value=1,
                 max_value=100,
                 value=preset["batch_size"],
-                help="Количество лидов в батче (рекомендуется 1-10 для rate limit 1 req/sec)"
+                help="Number of leads per batch (recommended 1-10 for rate limit 1 req/sec)"
             )
 
             delay = st.slider(
-                "Delay между запросами (сек)",
+                "Delay between requests (sec)",
                 min_value=0.5,
                 max_value=5.0,
                 value=preset["delay"],
                 step=0.1,
-                help="Минимум 1.0 сек для RapidAPI (1 req/sec)"
+                help="Minimum 1.0 sec for RapidAPI (1 req/sec)"
             )
 
             if delay < 1.0:
-                st.warning("⚠️ Задержка < 1 сек может вызвать rate limit!")
+                st.warning("⚠️ Delay < 1 sec may cause rate limit!")
 
             st.markdown("**Query Templates**")
 
             use_custom_query = st.checkbox(
-                "Использовать кастомный запрос",
+                "Use custom query",
                 value=False,
-                help="Отключи для автоматической стратегии (email -> name)"
+                help="Disable for automatic strategy (email -> name)"
             )
 
             if use_custom_query:
-                st.markdown("**Доступные переменные:**")
-                st.code("{name} - имя лида\n{email} - email лида")
+                st.markdown("**Available variables:**")
+                st.code("{name} - lead name\n{email} - lead email")
 
                 query_template = st.text_area(
-                    "Шаблон запроса",
+                    "Query template",
                     value='"{email}" instagram',
                     height=100,
-                    help="Пример: \"{email}\" instagram\nПример: \"{name}\" instagram influencer"
+                    help="Example: \"{email}\" instagram\nExample: \"{name}\" instagram influencer"
                 )
 
-                st.markdown("**Примеры:**")
+                st.markdown("**Examples:**")
                 st.code('"{email}" instagram')
                 st.code('"{name}" instagram')
                 st.code('"{name}" "{email}" instagram')
             else:
                 query_template = None
-                st.info("Стратегия: сначала email, потом name (fallback)")
+                st.info("Strategy: email first, then name (fallback)")
 
         st.markdown("### 🔑 API")
         rapidapi_key = st.text_input(
@@ -129,11 +129,11 @@ with tab1:
             type="password"
         )
 
-        st.markdown("### 📊 Лимиты обработки")
-        process_all = st.checkbox("Обработать все строки", value=False)
+        st.markdown("### 📊 Processing Limits")
+        process_all = st.checkbox("Process all rows", value=False)
         if not process_all:
             max_rows = st.number_input(
-                "Количество строк",
+                "Number of rows",
                 min_value=1,
                 max_value=1000,
                 value=10
@@ -142,51 +142,51 @@ with tab1:
             max_rows = None
 
     with col_right:
-        st.subheader("📁 Загрузка и запуск")
+        st.subheader("📁 Upload and Run")
 
         uploaded_file = st.file_uploader(
-            "CSV с лидами",
+            "CSV with leads",
             type=['csv'],
-            help="Загрузи CSV с колонками: Person - Name, Person - Email - Work"
+            help="Upload CSV with columns: Person - Name, Person - Email - Work"
         )
 
         if uploaded_file:
             df = pd.read_csv(uploaded_file, encoding='utf-8-sig')
-            st.success(f"✅ Загружено {len(df)} строк")
+            st.success(f"✅ Loaded {len(df)} rows")
 
-            with st.expander("👀 Предпросмотр (первые 10 строк)"):
+            with st.expander("👀 Preview (first 10 rows)"):
                 st.dataframe(df.head(10))
 
             col1, col2 = st.columns(2)
             with col1:
                 name_col = st.selectbox(
-                    "Колонка: Имя",
+                    "Column: Name",
                     df.columns,
                     index=0 if 'Person - Name' not in df.columns else list(df.columns).index('Person - Name')
                 )
             with col2:
                 email_col = st.selectbox(
-                    "Колонка: Email",
+                    "Column: Email",
                     df.columns,
                     index=2 if len(df.columns) > 2 else 0
                 )
 
-            st.markdown("### 📊 Оценка")
+            st.markdown("### 📊 Estimates")
             estimated_leads = len(df) if process_all else min(max_rows or 10, len(df))
             estimated_requests = estimated_leads * (2 if not use_custom_query else 1)
             estimated_time_sec = estimated_requests * delay
             estimated_time_min = estimated_time_sec / 60
 
             col1, col2, col3 = st.columns(3)
-            col1.metric("Лидов", estimated_leads)
-            col2.metric("API запросов", f"~{estimated_requests}")
-            col3.metric("Время (мин)", f"~{estimated_time_min:.1f}")
+            col1.metric("Leads", estimated_leads)
+            col2.metric("API requests", f"~{estimated_requests}")
+            col3.metric("Time (min)", f"~{estimated_time_min:.1f}")
 
-            st.markdown("### 🚀 Запуск")
+            st.markdown("### 🚀 Launch")
 
-            if st.button("🚀 НАЧАТЬ ОБОГАЩЕНИЕ", type="primary", use_container_width=True, disabled=st.session_state.processing):
+            if st.button("🚀 START ENRICHMENT", type="primary", use_container_width=True, disabled=st.session_state.processing):
                 if not rapidapi_key:
-                    st.error("❌ Укажи RapidAPI ключ!")
+                    st.error("❌ Please provide RapidAPI key!")
                 else:
                     st.session_state.processing = True
 
@@ -205,7 +205,7 @@ with tab1:
                     df_renamed.to_csv(temp_input, index=False, encoding='utf-8-sig')
 
                     try:
-                        status_text.info("⚙️ Инициализация workflow...")
+                        status_text.info("⚙️ Initializing workflow...")
 
                         workflow = EnrichmentWorkflow(
                             api_key=rapidapi_key,
@@ -215,9 +215,9 @@ with tab1:
 
                         def update_progress(processed, total):
                             progress_bar.progress(processed / total)
-                            status_text.info(f"Обработано: {processed}/{total}")
+                            status_text.info(f"Processed: {processed}/{total}")
 
-                        status_text.info("🚀 Запуск обогащения...")
+                        status_text.info("🚀 Starting enrichment...")
 
                         stats = asyncio.run(
                             workflow.enrich_csv(
@@ -232,28 +232,28 @@ with tab1:
                         os.remove(temp_input)
 
                         progress_bar.progress(1.0)
-                        status_text.success("✅ Обогащение завершено!")
+                        status_text.success("✅ Enrichment completed!")
 
                         st.session_state.enriched_df = pd.read_csv(output_file, encoding='utf-8-sig')
                         st.session_state.stats = stats
 
                         col1, col2, col3 = st.columns(3)
-                        col1.metric("Обработано", stats['processed'])
-                        col2.metric("Найдено", stats['found'])
+                        col1.metric("Processed", stats['processed'])
+                        col2.metric("Found", stats['found'])
                         col3.metric("Success Rate", f"{stats['found']/stats['processed']*100:.1f}%")
 
                         st.dataframe(st.session_state.enriched_df.head(20))
 
                         csv_data = st.session_state.enriched_df.to_csv(index=False, encoding='utf-8-sig')
                         st.download_button(
-                            "⬇️ Скачать результаты",
+                            "⬇️ Download results",
                             data=csv_data,
                             file_name=f"enriched_{timestamp}.csv",
                             mime='text/csv'
                         )
 
                     except Exception as e:
-                        status_text.error(f"❌ Ошибка: {e}")
+                        status_text.error(f"❌ Error: {e}")
                         import traceback
                         st.error(traceback.format_exc())
 
@@ -261,13 +261,13 @@ with tab1:
                         st.session_state.processing = False
 
 with tab2:
-    st.subheader("📊 История результатов")
+    st.subheader("📊 Results History")
 
     results_files = sorted(RESULTS_DIR.glob("*.csv"), key=os.path.getmtime, reverse=True)
 
     if results_files:
         selected_file = st.selectbox(
-            "Выбери файл",
+            "Select file",
             options=results_files,
             format_func=lambda x: f"{x.name} ({datetime.fromtimestamp(x.stat().st_mtime).strftime('%Y-%m-%d %H:%M')})"
         )
@@ -279,117 +279,117 @@ with tab2:
             found = len(df_history[df_history.get('Status') == 'Found']) if 'Status' in df_history.columns else 0
 
             col1, col2, col3 = st.columns(3)
-            col1.metric("Всего", total)
-            col2.metric("Найдено", found)
+            col1.metric("Total", total)
+            col2.metric("Found", found)
             col3.metric("Success Rate", f"{found/total*100:.1f}%" if total > 0 else "0%")
 
             st.dataframe(df_history, use_container_width=True)
 
             csv_buffer = df_history.to_csv(index=False, encoding='utf-8-sig')
             st.download_button(
-                "⬇️ Скачать",
+                "⬇️ Download",
                 data=csv_buffer,
                 file_name=selected_file.name,
                 mime='text/csv'
             )
     else:
-        st.info("📭 Нет сохраненных результатов")
+        st.info("📭 No saved results")
 
 with tab3:
-    st.subheader("📖 Документация")
+    st.subheader("📖 Documentation")
 
     st.markdown("""
-    ## 🎯 Быстрый старт
+    ## 🎯 Quick Start
 
-    1. **Загрузи CSV** с лидами (колонки: Person - Name, Person - Email - Work)
-    2. **Выбери пресет** (Safe для новичков)
-    3. **Настрой параметры** (опционально)
-    4. **Запусти обогащение**
+    1. **Upload CSV** with leads (columns: Person - Name, Person - Email - Work)
+    2. **Select preset** (Safe for beginners)
+    3. **Configure parameters** (optional)
+    4. **Start enrichment**
 
-    ## 📊 Пресеты
+    ## 📊 Presets
 
-    ### 🛡️ Safe (Рекомендуется)
-    - **Delay:** 1.0 сек (строго соответствует RapidAPI лимиту)
-    - **Batch:** 1 лид
-    - **Queries:** 2 на лид (email + name fallback)
-    - **Скорость:** ~30 лидов/час
-    - **Риск:** Минимальный
+    ### 🛡️ Safe (Recommended)
+    - **Delay:** 1.0 sec (strictly matches RapidAPI limit)
+    - **Batch:** 1 lead
+    - **Queries:** 2 per lead (email + name fallback)
+    - **Speed:** ~30 leads/hour
+    - **Risk:** Minimal
 
     ### ⚖️ Balanced
-    - **Delay:** 1.2 сек (с запасом)
-    - **Batch:** 5 лидов
-    - **Queries:** 1 на лид
-    - **Скорость:** ~50 лидов/час
-    - **Риск:** Низкий
+    - **Delay:** 1.2 sec (with margin)
+    - **Batch:** 5 leads
+    - **Queries:** 1 per lead
+    - **Speed:** ~50 leads/hour
+    - **Risk:** Low
 
-    ## 🔧 Настройки
+    ## 🔧 Settings
 
     ### Batch Size
-    Количество лидов обрабатываемых параллельно в асинхронном режиме.
-    - **1-5:** Оптимально для rate limit 1 req/sec
-    - **Больше:** Выше риск блокировки
+    Number of leads processed in parallel in async mode.
+    - **1-5:** Optimal for rate limit 1 req/sec
+    - **Higher:** Increased blocking risk
 
     ### Delay
-    Задержка между запросами к API.
-    - **Минимум 1.0 сек** для RapidAPI (1 request/second)
-    - **Рекомендуется 1.1-1.2 сек** для безопасности
+    Delay between API requests.
+    - **Minimum 1.0 sec** for RapidAPI (1 request/second)
+    - **Recommended 1.1-1.2 sec** for safety
 
-    ### Кастомный Query Template
-    Позволяет полностью контролировать поисковый запрос.
+    ### Custom Query Template
+    Allows full control over search query.
 
-    **Переменные:**
-    - `{name}` - имя лида
-    - `{email}` - email лида
+    **Variables:**
+    - `{name}` - lead name
+    - `{email}` - lead email
 
-    **Примеры:**
+    **Examples:**
     ```
     "{email}" instagram
     "{name}" instagram influencer
     "{name}" "{email}" instagram site:instagram.com
     ```
 
-    **Когда использовать:**
-    - Для специфических ниш (e.g., "fitness instagram")
-    - Для точного таргетинга
-    - Для экспериментов с разными стратегиями
+    **When to use:**
+    - For specific niches (e.g., "fitness instagram")
+    - For precise targeting
+    - For experimenting with different strategies
 
-    ## ⚡ RapidAPI Лимиты
+    ## ⚡ RapidAPI Limits
 
-    **Твой план:**
-    - 500,000 запросов/месяц
-    - **1 запрос/секунду**
-    - Bandwidth: 10 GB/месяц
+    **Your plan:**
+    - 500,000 requests/month
+    - **1 request/second**
+    - Bandwidth: 10 GB/month
 
-    **Рекомендации:**
-    - Используй delay ≥ 1.0 сек
-    - Начинай с малых тестов (10-50 лидов)
-    - Мониторь rate limit в логах
+    **Recommendations:**
+    - Use delay ≥ 1.0 sec
+    - Start with small tests (10-50 leads)
+    - Monitor rate limit in logs
 
     ## 🐛 Troubleshooting
 
     **Rate Limit Error:**
-    - Увеличь delay до 1.5-2.0 сек
-    - Уменьши batch size до 1
-    - Подожди 1-2 минуты между запусками
+    - Increase delay to 1.5-2.0 sec
+    - Reduce batch size to 1
+    - Wait 1-2 minutes between runs
 
-    **Низкий Success Rate:**
-    - Используй кастомный query template
-    - Попробуй стратегию с 2 queries (email + name)
-    - Проверь качество данных в CSV
+    **Low Success Rate:**
+    - Use custom query template
+    - Try strategy with 2 queries (email + name)
+    - Check data quality in CSV
 
     **Timeout Errors:**
-    - Проверь интернет соединение
-    - Проверь валидность RapidAPI ключа
+    - Check internet connection
+    - Verify RapidAPI key validity
     """)
 
 st.sidebar.markdown("---")
-st.sidebar.markdown("### 📊 Статус")
+st.sidebar.markdown("### 📊 Status")
 if st.session_state.processing:
-    st.sidebar.success("🟢 Обработка...")
+    st.sidebar.success("🟢 Processing...")
 else:
-    st.sidebar.info("⚪ Готов к запуску")
+    st.sidebar.info("⚪ Ready to run")
 
 if st.session_state.stats:
-    st.sidebar.markdown("### 📈 Последний запуск")
-    st.sidebar.metric("Найдено", st.session_state.stats['found'])
-    st.sidebar.metric("API запросов", st.session_state.stats['api_requests'])
+    st.sidebar.markdown("### 📈 Last Run")
+    st.sidebar.metric("Found", st.session_state.stats['found'])
+    st.sidebar.metric("API requests", st.session_state.stats['api_requests'])

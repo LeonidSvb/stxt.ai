@@ -1,0 +1,229 @@
+Realrevenue Handover - November 12
+VIEW RECORDING - 17 mins (No highlights): 
+
+---
+
+0:00 - Pratik Agrawal (automateboringwork.com)
+  Yeah, so I just wanted a separate link because we could record the call, walking you through how we are using it.
+
+0:08 - Matt Fuchshofer (realrevenue.io)
+  Yeah. Yeah. No worries.
+
+0:11 - Pratik Agrawal (automateboringwork.com)
+  All right. I need one help from you. Can you quickly log into your NITN account? And yeah, just share your screen with me once.  I'll guide you as to setting up your Google credentials. Yeah.
+
+0:29 - Matt Fuchshofer (realrevenue.io)
+  Very sick. I don't know. Is that NAM? Yes, it is. All right. Is that right? Can you see my screen?
+
+0:50 - Pratik Agrawal (automateboringwork.com)
+  No, I can't see your screen yet. All right. It's visible now. Yeah. Okay. So, all right. Click on... Credentials, just besides Workflows.  Yeah. Yeah. Over on the top right, click on Create Credential. Type Google Sheets.
+
+1:22 - Matt Fuchshofer (realrevenue.io)
+  The first one.
+
+1:25 - Pratik Agrawal (automateboringwork.com)
+  Sign in with Google. Can you just name, like, on the top left, can you just name it as Max Sheets in place of Google Sheets account?  On the top left, where it's Google Sheets account? No, it's not right.
+
+1:56 - Matt Fuchshofer (realrevenue.io)
+  Yeah. So, yeah, yeah.
+
+1:57 - Pratik Agrawal (automateboringwork.com)
+  Click on that again. Edit. Do you want to go here?
+
+2:01 - Matt Fuchshofer (realrevenue.io)
+  Yeah, open.
+
+2:03 - Pratik Agrawal (automateboringwork.com)
+  And on the top left, where Google Sheets account is written, on the top, just rename it as Matt Streets.  Awesome. You'll have to click somewhere so that you can save. Yeah, on the top right, you can save now.  Okay, perfect. You can close this one. Yeah, no, it didn't work. Okay, open it again. I don't know.
+
+2:40 - Matt Fuchshofer (realrevenue.io)
+  It says my Chase.
+
+2:41 - Pratik Agrawal (automateboringwork.com)
+  Yeah, yeah, but it still says needs first setup. So I think the sign in didn't work. Click on signing in with Google.  Sorry, yeah.
+
+3:01 - Matt Fuchshofer (realrevenue.io)
+  It says that, I'll do this, I'll do it again. Yeah. Hold on. Yeah. Did it work the same?
+
+3:27 - Pratik Agrawal (automateboringwork.com)
+  Yeah, it says successful.
+
+3:29 - Matt Fuchshofer (realrevenue.io)
+  Oh, perfect.
+
+3:31 - Pratik Agrawal (automateboringwork.com)
+  All right. So give me a moment.
+
+3:38 - Matt Fuchshofer (realrevenue.io)
+  Yeah. Yep. Mm-hm. Mm Mm-hm. You Thank Okay, so your credentials seem to be working.
+
+4:57 - Pratik Agrawal (automateboringwork.com)
+  Let's test it out once.
+
+5:07 - Matt Fuchshofer (realrevenue.io)
+  Thank you.
+
+5:31 - Pratik Agrawal (automateboringwork.com)
+  All right, perfect. So I'll share my screen, Mac, and I'll show you what I have created for you. Can you see my screen?  Yep.
+
+5:45 - Matt Fuchshofer (realrevenue.io)
+  Okay.
+
+5:46 - Pratik Agrawal (automateboringwork.com)
+  So this is what your internet and workspace looks like. Yeah. Over here, you can see that you have these three options, which is Projects, Personal, and Overview.
+
+5:56 - Matt Fuchshofer (realrevenue.io)
+  Yeah. Okay.
+
+5:57 - Pratik Agrawal (automateboringwork.com)
+  Projects, whenever you create some new... Yeah. Projects category itself, but for now, we have kept it in your personal workflows, and we have added all of them into a folder called Real Revenue Scrapers.  So once you click on these folders, you will have access to all three scrapers. Okay, now moving to the Google Sheets.  Yeah, this is the Instagram man. This is the YouTube Sheet. And. Thanks. Okay. Do. Yeah. All right. Let's see what it is.  Let's see what it Thank you. Thank you. All right, so I'll show you what are the updates that I have done.  Yeah. So as you can see that there is this scraping code column here. I'm just going to make it red so you know that you're not supposed to edit this, right?  this is auto-calculated. Yeah. What it does, it adds all the columns that we have over here together so that every scraping activity you do is unique.  Yeah. Okay. Then we have this status column. So every time you run a scraper, as soon as the process is completed, then it will be automatically marked as done.  You don't have to do it manually. The reason we are doing this is because we don't want the scraper to...  Go and scrape any entries that we have previously completed. So there is a filter that the scraper should only scrape for entries where status is blank.  Yeah.
+
+8:12 - Matt Fuchshofer (realrevenue.io)
+  Okay.
+
+8:13 - Pratik Agrawal (automateboringwork.com)
+  So once you have done this, and let's say you have a database, okay? The next step is after the scraping is done, you can select the minimum and maximum number of followers you want for that particular entry.  Yeah.
+
+8:30 - Matt Fuchshofer (realrevenue.io)
+  Okay.
+
+8:31 - Pratik Agrawal (automateboringwork.com)
+  And then you can select the sheet that you want to add it to. Yeah.
+
+8:35 - Matt Fuchshofer (realrevenue.io)
+  Okay. So this is, let's say, trading coach.
+
+8:37 - Pratik Agrawal (automateboringwork.com)
+  Now for trading, you might do a lot of searches with different keywords. So you do all those searches. The entire data is scraped here.
+
+8:48 - Matt Fuchshofer (realrevenue.io)
+  Yeah. In the scraping database, you will have entire data.
+
+8:52 - Pratik Agrawal (automateboringwork.com)
+  But all you have to do is go here, select the followers you want in that particular keyword, And collect the CTU.  So that in, okay?
+
+9:02 - Matt Fuchshofer (realrevenue.io)
+  Pushes it to that trading coach. Yeah, so this is trading coach, right?
+
+9:06 - Pratik Agrawal (automateboringwork.com)
+  But right now, I haven't, so the moment you select this, I can transfer the data, but I didn't do it because it's very easy to, you know, make a mistake in selecting the sheet from here.  So after you have selected the sheet, you go to this custom menu called Qualify. Yeah. And you run, you click on Run Qualification.  Yeah. So when you click on Run Qualification, then the data would automatically be transferred here.
+
+9:34 - Matt Fuchshofer (realrevenue.io)
+  Okay. Okay.
+
+9:36 - Pratik Agrawal (automateboringwork.com)
+  And in this sheet, what I have done is I am only controlling column A to F.
+
+9:41 - Matt Fuchshofer (realrevenue.io)
+  Yeah. Okay.
+
+9:43 - Pratik Agrawal (automateboringwork.com)
+  So after column D, you can add any columns you want. You can do any formatting you want. You are not restricted in those terms.  This can be your CRM in itself. Okay. Here in DM Send, I have an option called Yes.
+
+9:58 - Matt Fuchshofer (realrevenue.io)
+  Yes.
+
+9:58 - Pratik Agrawal (automateboringwork.com)
+  So the moment you selected the... the... This row becomes green. Okay, now there is one more thing that you need to remember, which is, right now I have two sheets here, which is Trading Coach and Finance Coach.  Yeah. Let's say I add a new sheet. So let's say you add a new sheet. Yeah. The way you would want to do this is click on this arrow here and do Duplicate.  Yeah. Okay, so that way all the settings are transferred without you having to do anything. Just rename it. Yes, you just rename it to, let's say, Relationship Coach.  But this is not there in the drop-down yet.
+
+10:41 - Matt Fuchshofer (realrevenue.io)
+  Yeah.
+
+10:42 - Pratik Agrawal (automateboringwork.com)
+  Okay, so you go to qualify whenever you add a new sheet. And then you click on Update Sheet drop-down.  Gotcha. Okay, so this script adds any new sheets that you have created in alphabetical order.
+
+10:55 - Matt Fuchshofer (realrevenue.io)
+  Yeah.
+
+10:57 - Pratik Agrawal (automateboringwork.com)
+  Okay, so now you can just select... select... select... ...like... Relationship Coach, and I'm just going to run this one qualification for you, okay?  Yep. So, let's do this one. Yeah, Real Estate Coach, 0 to 1, 100 to 10,000. So I'm going to add it to this sheet.  Yeah. Qualify, run qualification. So this script goes and checks for duplicates. Okay. So it has skipped 75 duplicates, and it has only transferred the four rows, which haven't been done before.
+
+11:33 - Matt Fuchshofer (realrevenue.io)
+  Yeah. Okay.
+
+11:34 - Pratik Agrawal (automateboringwork.com)
+  So you will see that only the... Yeah. So in the Real Estate one, so I forgot to, you know, remove the other one.  Sorry. Okay. So I forgot to delete the data when I duplicated. Yeah.
+
+11:57 - Matt Fuchshofer (realrevenue.io)
+  Right.
+
+11:57 - Pratik Agrawal (automateboringwork.com)
+  That's why you are seeing the other entries too. But essentially, when I ran the qualification, these four entries were copied and pasted.  Yeah.
+
+12:06 - Matt Fuchshofer (realrevenue.io)
+  Okay.
+
+12:07 - Pratik Agrawal (automateboringwork.com)
+  Let me do it again, just so it's clear. Okay. So I'm going to go to scraper parameters. We have the relationship sheet here.
+
+12:20 - Matt Fuchshofer (realrevenue.io)
+  I'm just going to do a qualification. Did change the real estate keyword you put in? Or are just doing this as an example?  Yeah, I'm just doing this as an example.
+
+12:28 - Pratik Agrawal (automateboringwork.com)
+  Yeah. ran four rows. And you have the four rows here. Yeah. Okay. Cool. And it's exactly the same for all three sheets.  Yeah.
+
+12:43 - Matt Fuchshofer (realrevenue.io)
+  Okay. Cool. That's it. No, I think.
+
+12:49 - Pratik Agrawal (automateboringwork.com)
+  Okay. So this one is a wrong sheet. Let me just fix it. Good that I checked. Yeah. Okay.
+
+12:59 - Matt Fuchshofer (realrevenue.io)
+  Okay.
+
+13:05 - Pratik Agrawal (automateboringwork.com)
+  I forgot to add newer YouTube sheet to this one. Yeah. So, realrevenue YouTube script.
+
+13:39 - Matt Fuchshofer (realrevenue.io)
+  So, realrevenue YouTube script.
+
+13:43 - Pratik Agrawal (automateboringwork.com)
+  So, realrevenue. Okay. realrevenue. realrevenue. Yeah, so it was just a small mistake. Yeah, sir. Now, we should be good to go here as well.  Yeah, so this is the same for YouTube, and it's the same for X. Cool.
+
+14:50 - Matt Fuchshofer (realrevenue.io)
+  Cool.
+
+14:51 - Pratik Agrawal (automateboringwork.com)
+  Perfect. So just give it a shot. Let me know, you know, if you hit any roadblood.
+
+14:56 - Matt Fuchshofer (realrevenue.io)
+  You'll able to record, like, a quick tutorial video. Just when you get a chance, you don't have to do it now.  I know. So that is why I came on a call here.
+
+15:05 - Pratik Agrawal (automateboringwork.com)
+  So I have this Fathom recording. And after the call ends, you will receive the entire recording. Perfect. We wouldn't have been able to do this in Upwork.
+
+15:14 - Matt Fuchshofer (realrevenue.io)
+  Yeah. No worries.
+
+15:17 - Pratik Agrawal (automateboringwork.com)
+  Okay. So, yeah, perfect. And one last thing. So we have added your SERP API here. Okay? Yeah. Yeah. So this is your credential.  Now, it's up to you whether you want to pay for the subscription or you want to, you know, keep churning new accounts.  Yeah. I would say it's much easier to pay for the subscription once.
+
+15:41 - Matt Fuchshofer (realrevenue.io)
+  Yeah.
+
+15:42 - Pratik Agrawal (automateboringwork.com)
+  And, you know, just put in one month where you scrape everything. Yeah. And then you don't have to go back to the system for a fair amount of time.
+
+15:50 - Matt Fuchshofer (realrevenue.io)
+  Yeah. Perfect. I'll probably do that. All right. Yeah. Done. All right. Cool.
+
+15:57 - Pratik Agrawal (automateboringwork.com)
+  Awesome, Matt. No worries. Thank you very much.
+
+16:00 - Matt Fuchshofer (realrevenue.io)
+  Appreciate it. Let's see how we go. I'll play around with it, launch it, and then I'll keep in touch when we launch with setters.  Yeah.
+
+16:12 - Pratik Agrawal (automateboringwork.com)
+  And when you just get some time, you can, you know, process the payment.
+
+16:16 - Matt Fuchshofer (realrevenue.io)
+  I'll do that right now. Perfect.
+
+16:19 - Pratik Agrawal (automateboringwork.com)
+  Thanks, Matt. Have a good time. Thank you much.
+
+16:21 - Matt Fuchshofer (realrevenue.io)
+  if you need any more help. No worries. Thank you. Happy to help. Have a good day.
+
+16:26 - Pratik Agrawal (automateboringwork.com)
+  Bye-bye.

@@ -1,0 +1,8 @@
+0000000000000000000000000000000000000000 336194da42bb41e76f7a8ca4d8e79c7f47a0fe72 Leo <standartdevelop@gmail> 1764228395 +0800	commit (initial): feat: Instagram Lead Enrichment - модульная система обогащения лидов
+336194da42bb41e76f7a8ca4d8e79c7f47a0fe72 fe9b066a29b8267bfb13c5dd90d7d282e3d28938 Leo <standartdevelop@gmail> 1764228528 +0800	commit: docs: добавлен обучающий урок по работе системы
+fe9b066a29b8267bfb13c5dd90d7d282e3d28938 fe9b066a29b8267bfb13c5dd90d7d282e3d28938 Leo <standartdevelop@gmail> 1764299348 +0800	reset: moving to HEAD
+fe9b066a29b8267bfb13c5dd90d7d282e3d28938 c48b8188d56205accdacf0b43a7bf14f0ef327d5 Leo <standartdevelop@gmail> 1764301082 +0800	commit: feat: добавлен быстрый Python скрипт для обогащения Instagram
+c48b8188d56205accdacf0b43a7bf14f0ef327d5 8ddc5d8d4189f6898bff80fb90d544cccbcc15ef Leo <standartdevelop@gmail> 1764302068 +0800	commit: refactor: модульная архитектура Instagram Enrichment
+8ddc5d8d4189f6898bff80fb90d544cccbcc15ef 1b291847f391236b7efe940b2417f87722bdbfd5 Leo <standartdevelop@gmail> 1764302385 +0800	commit: config: увеличен batch size и upload limit для больших CSV
+1b291847f391236b7efe940b2417f87722bdbfd5 eff6e9bdc112694c4b7cc4eb7027bdb5db25dfa4 Leo <standartdevelop@gmail> 1764303076 +0800	commit: config: порт 8502 для локального запуска
+eff6e9bdc112694c4b7cc4eb7027bdb5db25dfa4 eae82afa5f05b96cdb25c09ec4253f6ee3c37a18 Leo <standartdevelop@gmail> 1764304292 +0800	commit: security: удалены API ключи из документации
